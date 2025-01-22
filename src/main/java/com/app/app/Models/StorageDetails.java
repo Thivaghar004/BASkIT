@@ -18,9 +18,5 @@ public class StorageDetails {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     private Integer stockAvailability;
 }
