@@ -18,9 +18,37 @@ public class StorageDetails {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
     private Integer stockAvailability;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public StoreDetails getStore() {
+        return store;
+    }
+
+    public void setStore(StoreDetails store) {
+        this.store = store;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public Integer getStockAvailability() {
+        return stockAvailability;
+    }
+
+    public void setStockAvailability(Integer stockAvailability) {
+        this.stockAvailability = stockAvailability;
+    }
 }
