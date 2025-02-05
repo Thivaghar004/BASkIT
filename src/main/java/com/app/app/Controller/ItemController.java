@@ -1,5 +1,6 @@
 package com.app.app.Controller;
 
+import com.app.app.DTO.ItemDTO;
 import com.app.app.Models.Item;
 import com.app.app.Services.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,18 @@ public class ItemController {
     private ItemService itemService;
 
     @GetMapping
-    public List<Item> getAllItems() {
-        return itemService.getAllItems();
+    @CrossOrigin(origins = "http://localhost:3000")
+    public ResponseEntity<List<ItemDTO>> getItems(
+            @RequestParam("location_id") Long locationId,
+            @RequestParam(value = "category_id", required = false) Long categoryId
+    ) {
+        List<ItemDTO> items;
+        if (categoryId != null) {
+            items = itemService.getItemsByLocationAndCategory(locationId, categoryId);
+        } else {
+            items = itemService.getItemsByLocation(locationId);
+        }
+        return ResponseEntity.ok(items);
     }
 
     @GetMapping("/{id}")

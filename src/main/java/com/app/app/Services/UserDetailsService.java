@@ -14,6 +14,7 @@ public class UserDetailsService {
     private UserDetailsRepository userDetailsRepository;
 
     public List<UserDetails> getAllUsers() {
+
         return userDetailsRepository.findAll();
     }
 
@@ -22,9 +23,18 @@ public class UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + id));
     }
 
-    public UserDetails createUser(UserDetails userDetails) {
-        return userDetailsRepository.save(userDetails);
+    public UserDetails getUserByEmail(String email) {
+        return userDetailsRepository.findByEmail(email);
+
     }
+
+    public UserDetails createUser(UserDetails userDetails) {
+        System.out.println("Saving user: " + userDetails);
+        UserDetails savedUser = userDetailsRepository.save(userDetails);
+        System.out.println("Saved user ID: " + savedUser.getUserId());
+        return savedUser;
+    }
+
 
     public UserDetails updateUser(Long id, UserDetails userDetails) {
         UserDetails existingUser = getUserById(id);
@@ -33,11 +43,13 @@ public class UserDetailsService {
         existingUser.setEmail(userDetails.getEmail());
         existingUser.setAddress(userDetails.getAddress());
         existingUser.setLocation(userDetails.getLocation());
+        existingUser.setPassword(userDetails.getPassword());
         return userDetailsRepository.save(existingUser);
     }
 
     public void deleteUser(Long id) {
         userDetailsRepository.deleteById(id);
     }
+
 }
 

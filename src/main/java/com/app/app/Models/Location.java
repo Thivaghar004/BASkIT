@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Location {
 
     @Id
+    @Column(name = "location_id")
     private Long locationId;
 
     private String locationName;
@@ -25,5 +26,8 @@ public class Location {
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
+    }
+
+    public Location() {
     }
 }
