@@ -1,5 +1,8 @@
 package com.app.app.Models;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "cart")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "cartId")
 public class Cart {
 
     @Id
@@ -18,12 +22,18 @@ public class Cart {
     @JoinColumn(name = "user_id")
     private UserDetails user;
 
-    private Integer quantity;
-    private LocalDateTime lastUpdatedDate;
+    @Column(nullable = false)
+    private LocalDateTime lastUpdatedDate = LocalDateTime.now();
     private String address;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ListOfItems> listOfItems;
+
+    @PrePersist
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdatedDate = LocalDateTime.now();
+    }
 
     public Long getCartId() {
         return cartId;
@@ -39,14 +49,6 @@ public class Cart {
 
     public void setUser(UserDetails user) {
         this.user = user;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public LocalDateTime getLastUpdatedDate() {

@@ -25,8 +25,11 @@ public class AuthController {
         if (user != null && user.getPassword().equals(userDetails.getPassword())) {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful");
+            response.put("userId", user.getUserId());
             response.put("email", user.getEmail());
             response.put("name", user.getName());
+            response.put("locationId", user.getLocation().getLocationId());
+            response.put("address", user.getAddress());
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));

@@ -1,9 +1,14 @@
 package com.app.app.Models;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "list_of_items")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class ListOfItems {
 
     @Id
@@ -13,9 +18,11 @@ public class ListOfItems {
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;
+    @Column(nullable = false)
+    private Integer quantity;
 
     @ManyToOne
-    @JoinColumn(name = "item_id")
+    @JoinColumn(name = "item_id", referencedColumnName = "itemId")
     private Item item;
 
     public Long getId() {
@@ -34,11 +41,13 @@ public class ListOfItems {
         this.cart = cart;
     }
 
-    public Item getItem() {
-        return item;
+    public Item getItem() { return item; }
+    public void setItem(Item item) { this.item = item; }
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }
