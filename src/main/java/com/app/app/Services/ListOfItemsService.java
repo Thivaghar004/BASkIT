@@ -53,11 +53,20 @@ public class ListOfItemsService {
     }
 
 
-    public ListOfItems updateItem(Long id, ListOfItems listOfItems) {
-        ListOfItems existingItem = getItemById(id);
-        existingItem.setCart(listOfItems.getCart());
-        existingItem.setItem(listOfItems.getItem());
-        existingItem.setQuantity(listOfItems.getQuantity());
+    public ListOfItems updateItem(Long id, Long cartId, Long itemId, Integer quantity) {
+        ListOfItems existingItem = listOfItemsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found"));
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        existingItem.setCart(cart);
+        existingItem.setItem(item);
+        existingItem.setQuantity(quantity);
+
         return listOfItemsRepository.save(existingItem);
     }
     public ListOfItems addItemToCart(Long cartId, Long itemId, Integer quantity) {

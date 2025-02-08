@@ -51,9 +51,27 @@ public class ListOfItemsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ListOfItems> updateItem(@PathVariable Long id, @RequestBody ListOfItems listOfItems) {
-        ListOfItems updatedItem = listOfItemsService.updateItem(id, listOfItems);
-        return ResponseEntity.ok(updatedItem);
+    public ResponseEntity<?> updateItem(@PathVariable Long id, @RequestBody Map<String, Object> requestBody) {
+        try {
+            if (!requestBody.containsKey("cartId") || !requestBody.containsKey("itemId") || !requestBody.containsKey("quantity")) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
+            }
+
+            Long cartId = ((Number) requestBody.get("cartId")).longValue();
+            Long itemId = ((Number) requestBody.get("itemId")).longValue();
+            Integer quantity = (Integer) requestBody.get("quantity");
+
+            if (cartId == null || itemId == null || quantity == null || quantity <= 0) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Invalid request data"));
+            }
+
+            ListOfItems updatedItem = listOfItemsService.updateItem(id, cartId, itemId, quantity);
+
+            return ResponseEntity.ok(updatedItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of("error", "Error updating cart item", "message", e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{id}")
