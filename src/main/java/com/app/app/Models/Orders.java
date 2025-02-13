@@ -16,11 +16,11 @@ public class Orders {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserDetails user;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "cart_id", referencedColumnName = "cart_id")
     private Cart cart;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "payment_id", referencedColumnName = "payment_id")
     private Payment payment;
 
