@@ -9,6 +9,7 @@ public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private Long orderId;
 
     @ManyToOne
@@ -29,6 +30,9 @@ public class Orders {
     @JoinColumn(name = "delivery_agent_id", referencedColumnName = "delivery_agent_id")
     private DeliveryAgent deliveryAgent;
 
+    private String name;
+    private String phoneNumber;
+    private Double totalAmount;
     private String address;
 
     private String orderStatus; // New attribute for order status
@@ -82,6 +86,14 @@ public class Orders {
         this.deliveryAgent = deliveryAgent;
     }
 
+    public String getName() { return name; }
+
+    public void setName(String userName) { this.name = userName; }
+
+    public String getPhoneNumber() { return phoneNumber; }
+
+    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+
     public String getAddress() {
         return address;
     }
@@ -96,5 +108,13 @@ public class Orders {
 
     public void setOrderStatus(String orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
     }
 }

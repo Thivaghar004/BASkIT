@@ -18,7 +18,7 @@ public class Payment {
     private String paymentMethod;
     private LocalDateTime paymentDate;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Orders orders;
 

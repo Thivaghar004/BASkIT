@@ -10,8 +10,13 @@ import java.util.List;
 @Service
 public class UserDetailsService {
 
+    private final UserDetailsRepository userDetailsRepository;
+
     @Autowired
-    private UserDetailsRepository userDetailsRepository;
+    public UserDetailsService(UserDetailsRepository userDetailsRepository) {
+        this.userDetailsRepository = userDetailsRepository;
+        System.out.println("✅ UserDetailsService Initialized by Spring");
+    }
 
     public List<UserDetails> getAllUsers() {
 
