@@ -6,6 +6,7 @@ import com.app.app.Models.UserDetails;
 import com.app.app.Models.ListOfItems;
 import com.app.app.Services.CartService;
 import com.app.app.Services.ItemService;
+
 import com.app.app.Services.UserDetailsService;
 import com.app.app.Services.ListOfItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,12 +65,17 @@ public class CartController {
             return ResponseEntity.status(404).body(null);
         }
 
-        Cart cart = new Cart();
-        cart.setUser(user);
-        cart.setAddress(user.getAddress());
+        Cart newCart = new Cart();
+        newCart.setUser(user);
+        newCart.setAddress(user.getAddress());
 
-        Cart newCart = cartService.createCart(cart);
-        return ResponseEntity.ok(newCart);
+        // Do not add items from the old cart, ensure it's an empty cart
+        newCart.setListOfItems(new ArrayList<>()); // Explicitly make sure it's empty
+
+        // Save the new cart to the database
+        Cart createdCart = cartService.createCart(newCart);
+
+        return ResponseEntity.status(201).body(createdCart);
     }
 
     @PutMapping("/{id}")

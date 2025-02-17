@@ -103,10 +103,7 @@ public class OrderController {
             paymentService.updatePayment(savedPayment.getPaymentId(), savedPayment);
 
             // ✅ Clear the Cart (if COD)
-            if (paymentMethod.equals("cod")) {
-                cartService.deleteCart(cartId);
-                System.out.println("🛒 Cart cleared after order placement.");
-            }
+
 
             return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
         } catch (Exception e) {
@@ -123,8 +120,9 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
+    public ResponseEntity<String> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Order deleted successfully");
     }
+
 }

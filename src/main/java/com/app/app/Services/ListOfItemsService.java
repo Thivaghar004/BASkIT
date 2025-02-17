@@ -35,6 +35,10 @@ public class ListOfItemsService {
         return listOfItemsRepository.findByCart_CartId(cartId);
     }
 
+    public Optional<ListOfItems> findByCart_CartIdAndItem_ItemId(Long cartId, Long itemId) {
+        return listOfItemsRepository.findByCart_CartIdAndItem_ItemId(cartId, itemId);
+    }
+
     public ListOfItems createItem(ListOfItems listOfItems) {
         Optional<ListOfItems> existingItem = listOfItemsRepository.findByCart_CartIdAndItem_ItemId(
                 listOfItems.getCart().getCartId(),
@@ -91,6 +95,11 @@ public class ListOfItemsService {
 
         return listOfItemsRepository.save(newItem);
     }
+
+    public ListOfItems save(ListOfItems listOfItems) {
+        return listOfItemsRepository.save(listOfItems);
+    }
+
 
 
     public void deleteItem(Long id) {

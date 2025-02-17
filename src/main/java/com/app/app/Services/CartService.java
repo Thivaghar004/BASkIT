@@ -25,7 +25,14 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("Cart not found with ID: " + id));
     }
     public Cart getCartByUserId(Long userId) {
-        return cartRepository.findByUser_UserId(userId);
+
+        List<Cart> carts = cartRepository.findByUser_UserId(userId);
+
+        if (carts.isEmpty()) {
+            return null; // No cart found for user
+        }
+
+        return carts.get(0);
     }
 
     public Cart createCart(Cart cart) {
@@ -33,9 +40,9 @@ public class CartService {
         if (user == null) {
             throw new RuntimeException("User not found with ID: " + cart.getUser().getUserId());
         }
-        Cart existingCart = cartRepository.findByUser_UserId(user.getUserId());
-        if (existingCart != null) {
-            return existingCart; // Return existing cart instead of creating a new one
+        List<Cart> existingCarts = cartRepository.findByUser_UserId(user.getUserId());
+        if (!existingCarts.isEmpty()) {
+            return existingCarts.get(0); // Return the first cart if it exists
         }
         cart.setUser(user);
         return cartRepository.save(cart);
@@ -50,7 +57,13 @@ public class CartService {
     }
 
     public void deleteCart(Long id) {
-        cartRepository.deleteById(id);
+        Cart cart = getCartById(id);
+        cart.setActive(false);  // Instead of deleting, mark as inactive
+        cartRepository.save(cart);
+    }
+
+    public Cart saveCart(Cart cart) {
+        return cartRepository.save(cart);
     }
 }
 

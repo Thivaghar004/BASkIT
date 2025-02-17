@@ -29,6 +29,8 @@ public class Cart {
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ListOfItems> listOfItems;
 
+    private boolean isActive = true;
+
     @PrePersist
     @PreUpdate
     protected void onUpdate() {
@@ -73,5 +75,13 @@ public class Cart {
 
     public void setListOfItems(List<ListOfItems> listOfItems) {
         this.listOfItems = listOfItems;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,33 +50,41 @@ public class OrderService {
         if (order.getUser() == null || order.getUser().getUserId() == null) {
             throw new RuntimeException("⚠️ Order's user field is NULL or has no ID!");
         }
-
         if (order.getCart() == null || order.getCart().getCartId() == null) {
             throw new RuntimeException("⚠️ Order's cart field is NULL or has no ID!");
         }
 
-        // ✅ Fetch existing user from database
-        System.out.println("🔍 Fetching user with ID: " + order.getUser().getUserId());
+        // ✅ Fetch existing user and cart from database
         UserDetails user = userDetailsService.getUserById(order.getUser().getUserId());
-        order.setUser(user);
+        Cart oldCart = cartService.getCartById(order.getCart().getCartId());
 
-        // ✅ Fetch existing cart from database
-        System.out.println("🔍 Fetching cart with ID: " + order.getCart().getCartId());
-        Cart cart = cartService.getCartById(order.getCart().getCartId());
-        if (cart == null) {
-            throw new RuntimeException("❌ Cart with ID " + order.getCart().getCartId() + " does not exist!");
+        if (user == null || oldCart == null) {
+            throw new RuntimeException("❌ User or Cart not found!");
         }
-        order.setCart(cart);
 
-        System.out.println("✅ User & Cart Details Fetched, Saving Order...");
+        // ✅ Set existing cart and user
+        order.setUser(user);
+        order.setCart(oldCart);
+        order.setOrderStatus("PLACED");
 
         // ✅ Save the order
         Orders savedOrder = orderRepository.save(order);
-
         System.out.println("✅ Order saved successfully with ID: " + savedOrder.getOrderId());
+
+        // ✅ Create a new cart for the user (WITHOUT deleting the old cart)
+        Cart newCart = new Cart();
+        newCart.setUser(user);
+        newCart.setListOfItems(new ArrayList<>()); // Empty cart
+        newCart.setLastUpdatedDate(LocalDateTime.now());
+
+        // ✅ Save the new cart
+        Cart createdCart = cartService.saveCart(newCart);
+        System.out.println("🛒 New cart created with ID: " + createdCart.getCartId());
 
         return savedOrder;
     }
+
+
 
     @Transactional
     public Orders updateOrder(Long id, Orders orders) {
